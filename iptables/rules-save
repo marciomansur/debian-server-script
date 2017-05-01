@@ -1,0 +1,42 @@
+*filter
+
+# --- Disallow everything as the default filter policy
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+
+# --- Allow unlimited traffic on a few network adapters
+-A INPUT -i lo -j ACCEPT
+-A INPUT -i eth1 -j ACCEPT
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# --- Allow the outside world to connect to ssh (22), http (80) and https (443)
+-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
+
+# --- Allow remote access to Postgres, useful for remote database backups
+-A INPUT -p tcp -m tcp --dport 5432 -j ACCEPT
+
+#
+# --- A more secure version of the above rule, it includes a whitelisted IP
+#     Use either the above rule or this one, not both
+#     Replace X.X.X.X with the remote server's IP address
+# -A INPUT -p tcp -m tcp -s X.X.X.X --dport 5432 -j ACCEPT
+
+# --- Allow remote access to Redis
+#     Uncomment the line below to enable it
+-A INPUT -p tcp -m tcp --dport 6379 -j ACCEPT
+
+#
+# --- A more secure version of the above rule, it includes a whitelisted IP
+#     Use either the above rule or this one, not both
+#     Replace X.X.X.X with the remote server's IP address
+# -A INPUT -p tcp -m tcp -s X.X.X.X --dport 6379 -j ACCEPT
+
+# --- Allow the outside world to be able to ping you
+-A INPUT -p icmp -m icmp --icmp-type 0 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 3 -j ACCEPT
+-A INPUT -p icmp -m icmp --icmp-type 11 -j ACCEPT
+
+COMMIT

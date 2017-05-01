@@ -77,4 +77,26 @@ sudo usermod -aG docker "${KEY_USER}"
   echo "done!"
 }
 
+function configure_firewall() {
+  echo "Configuring iptables firewall..."
+  scp "iptables/rules-save" "${SSH_USER}@${SERVER_IP}:/tmp/rules-save"
+  ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'
+sudo mkdir -p /var/lib/iptables
+sudo mv /tmp/rules-save /var/lib/iptables
+sudo chown root:root -R /var/lib/iptables
+  '"
+  echo "done!"
+}
 
+function provision_server() {
+  configure_sudo
+  echo "-----------"
+  add_ssh_key
+  echo "-----------"
+  configure_secure_ssh
+  echo "-----------"
+  install_docker ${1}
+  echo "-----------"
+  configure_firewall
+  echo "-----------"
+}
