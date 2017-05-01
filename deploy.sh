@@ -179,6 +179,14 @@ do
     ;;
     -a|--provision-server)
     provision_server "${2:-${DOCKER_VERSION}}"
+    shift
+    ;;
+    -h|--help)
+    help_menu
+    shift
+    ;;
+    *)
+    echo "${1} is not a valid flag. try running: ${0} help"
 esac
 shift
 done
