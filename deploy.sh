@@ -142,9 +142,6 @@ ENVIRONMENT VARIABLES:
       Install Docker v${DOCKER_VERSION}:
       $ deploy -d
 
-      Install and initialize git:
-      $ deploy -g
-
       Configure the iptables firewall:
       $ deploy -f
 
@@ -153,4 +150,35 @@ ENVIRONMENT VARIABLES:
 EOF
 }
 
-
+while [[$# > 0]]
+do
+  case "${1}" in
+    -S|--preseed-server)
+    preseed_staging
+    shift
+    ;;
+    -u|--configure-sudo)
+    configure_sudo
+    shift
+    ;;
+    -k|--add-ssh-key)
+    add_ssh_key
+    shift
+    ;;
+    -s|--secure-ssh)
+    configure_secure_ssh
+    shift
+    ;;
+    -d|--install-docker)
+    install_docker "${2:-${DOCKER_VERSION}}"
+    shift
+    ;;
+    -f|--configure-firewall)
+    configure_firewall
+    shift
+    ;;
+    -a|--provision-server)
+    provision_server "${2:-${DOCKER_VERSION}}"
+esac
+shift
+done
