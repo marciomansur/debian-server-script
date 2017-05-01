@@ -100,3 +100,57 @@ function provision_server() {
   configure_firewall
   echo "-----------"
 }
+
+function help_menu() {
+cat << EOF
+Usage: ${0} (-h | -S | -u | -k | -s | -d [docker_ver] | -l | -g | -f | -a [docker_ver])
+
+ENVIRONMENT VARIABLES:
+  SERVER_IP        IP address to work on, ie. staging or production
+                   Defaulting to ${SERVER_IP}
+
+  SSH_USER         User account to ssh and scp in as
+                   Defaulting to ${SSH_USER}
+
+  KEY_USER         User account linked to the SSH key
+                   Defaulting to ${KEY_USER}
+
+  DOCKER_VERSION   Docker version to install
+                   Defaulting to ${DOCKER_VERSION}
+
+  OPTIONS:
+    -h|--help                 Show this message
+    -S|--preseed-staging      Preseed intructions for the staging server
+    -u|--sudo                 Configure passwordless sudo
+    -k|--ssh-key              Add SSH key
+    -s|--ssh                  Configure secure SSH
+    -d|--docker               Install Docker
+    -g|--git-init             Install and initialize git
+    -f|--firewall             Configure the iptables firewall
+    -a|--all                  Provision everything except preseeding
+
+    EXAMPLES:
+      Configure passwordless sudo:
+      $ deploy -u
+
+      Add SSH key:
+      $ deploy -k
+
+      Configure secure SSH:
+      $ deploy -s
+
+      Install Docker v${DOCKER_VERSION}:
+      $ deploy -d
+
+      Install and initialize git:
+      $ deploy -g
+
+      Configure the iptables firewall:
+      $ deploy -f
+
+      Configure everything together:
+      $ deploy -a
+EOF
+}
+
+
